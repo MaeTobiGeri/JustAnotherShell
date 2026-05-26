@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -g -Iinclude
-LDFLAGS = -lreadline
+CFLAGS = -Wall -Wextra -g -Iinclude $(shell pkg-config --cflags lua)
+LDFLAGS = -lreadline $(shell pkg-config --libs lua)
 
 SRCDIR = src
 OBJDIR = obj

@@ -2,6 +2,7 @@
 #include "signals.h"
 #include "utils.h"
 #include "execute.h"
+#include "config.h"
 
 int main() {
     char* buf;
@@ -12,9 +13,10 @@ int main() {
     sigaction(SIGINT, &sa, NULL);
 
     init_shell();
+    load_config();
 
     while (1) {
-        buf = readline("Yash> ");
+        buf = readline(get_dynamic_prompt());
         if (!buf) break;
 
         if(strlen(buf) > 0) {
@@ -58,9 +60,37 @@ int main() {
             fixed[j] = '\0';
             
             char* token = strtok(fixed, " ");
+            bool is_first_word = true;
+            static char alias_buffer[MAXCOM][512];
+            int alias_idx = 0;
 
             while (token != NULL && i < MAXCOM - 1) {
+                if (is_first_word) {
+                    char* alias_val = get_alias(token);
+                    if (alias_val && alias_idx < MAXCOM) {
+                        strncpy(alias_buffer[alias_idx], alias_val, 511);
+                        alias_buffer[alias_idx][511] = '\0';
+                        char* saveptr2;
+                        char* a_tok = strtok_r(alias_buffer[alias_idx], " ", &saveptr2);
+                        while (a_tok && i < MAXCOM - 1) {
+                            command[i++] = a_tok;
+                            a_tok = strtok_r(NULL, " ", &saveptr2);
+                        }
+                        alias_idx++;
+                        is_first_word = false;
+                        token = strtok(NULL, " ");
+                        continue;
+                    }
+                }
+                
                 command[i++] = token;
+                
+                if (strcmp(token, "|") == 0 || strcmp(token, "||") == 0 || strcmp(token, "&&") == 0) {
+                    is_first_word = true;
+                } else {
+                    is_first_word = false;
+                }
+                
                 token = strtok(NULL, " ");
             }
             command[i] = NULL;

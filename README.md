@@ -12,25 +12,25 @@ Yash already supports several core shell functionalities:
 
 - **Command Execution:** Run any standard Unix command (e.g., `ls`, `grep`, `mkdir`).
 - **Pipes (`|`):** Support for multi-stage command piping.
-- **Redirection:**
-  - Input redirection (`<`)
-  - Output redirection (`>`)
-  - Output append (`>>`)
+- **Redirection:** Input (`<`), Output (`>`), and Append (`>>`).
 - **Logical Operators:** Conditional execution using `&&` and `||`.
-- **Built-in Commands:** 
-  - `cd`: Change directory.
-  - `exit`: Terminate the shell.
+- **Built-in Commands:** `cd` and `exit`.
 - **Environment Variables:** Basic expansion of variables (e.g., `$HOME`, `$PATH`).
-- **Interactive Interface:** 
-  - Custom prompt (`Yash> `).
-  - Command history and line editing via `readline`.
+- **Interactive Interface:** Command history and line editing via `readline`.
 - **Signal Handling:** Gracefully handles `SIGINT` (Ctrl+C).
+
+### Advanced Features
+
+- **Lua Configuration:** Fully scriptable configuration using an embedded Lua engine. On first run, Yash generates a split configuration layout at `~/.config/JustAnotherShell/`:
+  - `config.lua`: For setting the prompt, colors, and defining aliases.
+  - `scripts.lua`: For running startup commands or tools (like a Python dashboard).
+- **Dynamic Prompts:** Use the `%w` format specifier in your Lua config (e.g., `yash.set_prompt('%w Yash> ')`) to automatically display your current working directory.
+- **Command Aliases:** Easily alias commands via Lua (e.g., `yash.add_alias('ls', 'ls --color=auto')`), fully supporting pipelines.
 
 ## Roadmap
 
 The project is still under active development. Planned future improvements include:
 
-- **Lua Configuration:** Integration of a configuration file written in **Lua** for flexible customization.
 - **POSIX Compliance:** Moving towards stricter adherence to POSIX standards for better compatibility.
 - **Job Control:** Implementation of background and foreground process management.
 
@@ -38,7 +38,7 @@ The project is still under active development. Planned future improvements inclu
 
 ### Prerequisites
 
-You will need a C compiler (like `gcc`) and the `readline` library.
+You will need a C compiler (like `gcc`), the `readline` library, and the `lua` development libraries.
 
 ### Building
 
@@ -54,6 +54,14 @@ Once built, you can start the shell by running:
 
 ```bash
 ./yash
+```
+
+### Using as Default Shell (Kitty)
+
+Since changing system shells with `chsh` might require elevated privileges, the easiest way to use Yash daily is to configure your terminal emulator to launch it. For Kitty, add this to `~/.config/kitty/kitty.conf`:
+
+```
+shell /absolute/path/to/JustAnotherShell/yash
 ```
 
 ## License

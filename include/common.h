@@ -14,9 +14,9 @@
 #include <readline/history.h>
 #include <fcntl.h>
 
-#define clear() printf("\033[H\033[J")
+#define clear() do { printf("\033[H\033[J"); fflush(stdout); } while(0)
 
-#define MAXLET 1000 //Maximum Number of Letters
-#define MAXCOM 100 //Maximum Number of Commands
+#define MAXLET 1000
+#define MAXCOM 100
 
 #endif
